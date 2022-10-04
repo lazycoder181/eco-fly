@@ -153,7 +153,23 @@ with tab4:
                 conn)
             pop_routes_1 = pd.DataFrame(pop_routes)
             pop_routes_1.to_csv("pr_1.csv")
-            # pop_air = pop_air.set_index(['DEPARTURE_AIRPORT'])
+            pop_air = pop_air.set_index(['DEPARTURE_AIRPORT'])
+            pop_routes_origin_dict_1 = {"NOC": 'Ireland West Knock Airport, Ireland',
+                                      "TGD": 'Podgorica Airport, Montenegro',
+                                      "KWA": 'Bucholz Army Air Field, Marshall Islands',
+                                      "CGH": 'Congonhas Airport, Brazil', "CKH": 'Chokurdakh Airport, Russia',
+                                      "HDF": 'Heringsdorf Airport, Germany', "OND": 'Ondangwa Airport, Namibia',
+                                      "XMH": 'Manihi Airport', "LUA": 'Lukla Airport, Nepal',
+                                      "AKX": 'Aktobe Airport, Kazakhstan'}
+            pop_routes_dest_dict_1 = {"LGW": 'London Gatwick Airport, United Kingdom, London',
+                                    "BEG": 'Belgrade Nikola Tesla Airport, Serbia',
+                                    "MAJ": 'Marshall Islands International Airport',
+                                    "SDU": 'Santos Dumont Airport, Brazil', "YKS": 'Yakutsk Airport, Russia',
+                                    "LUX": 'Luxembourg-Findel International Airport, Luxembourg',
+                                    "ERS": 'Eros Airport, Namibia',
+                                    "PPT": 'Faa International Airport, French Polynesia',
+                                    "KTM": 'Tribhuvan International Airport, Nepal',
+                                                "ALA": 'Almaty Airport, Kazakhstan'}
             pop_routes_origin_dict = {"KMG": 'Kunming Wujiaba International Airport, China',
                                       "ETM": 'Ramon Airport, Israel',
                                       "LHE": 'Alama Iqbal International Airport, Pakistan',
@@ -174,6 +190,7 @@ with tab4:
                                     "FRA": 'Frankfurt Airport, Germany'}
 
             pop_routes_1.replace({"ORIGIN": pop_routes_origin_dict, "DESTINATION": pop_routes_dest_dict}, inplace=True)
+            pop_routes_1.replace({"ORIGIN": pop_routes_origin_dict_1, "DESTINATION": pop_routes_dest_dict_1}, inplace=True)
             st.dataframe(pop_routes_1)
 
         with right_column:
