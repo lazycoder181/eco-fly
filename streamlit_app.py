@@ -169,8 +169,8 @@ with tab4:
                                     "KTM": 'Tribhuvan International Airport, Nepal',
                                     "ALA": 'Almaty Airport, Kazakhstan'}
 
-            pop_routes = pop_routes.replace({"origin": pop_routes_origin_dict, "destination": pop_routes_dest_dict})
-            st.dataframe(pop_routes)
+            pop_routes_1 = pop_routes.replace({"origin": pop_routes_origin_dict, "destination": pop_routes_dest_dict})
+            st.dataframe(pop_routes_1)
 
         with right_column:
             st_lottie(lottie_emission, height=300, key="coding")
