@@ -58,10 +58,10 @@ with st.container():
         st.image(deloitte_img)
 
 # Defining different tabs
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, pop_routes_tab = st.tabs([
     "SkyScanner",
-    "Greenhouse Impact", "Busiest Airports for Departures"])
-# tab4 "Popular Routes"
+    "Greenhouse Impact", "Busiest Airports for Departures", "Popular Routes"])
+# tab4
 
 with tab1:
     # st.header(
@@ -141,48 +141,47 @@ with tab3:
         with right_column:
             st_lottie(lottie_airport, height=300, key="airport")
 
-# with tab4:
-#     # st.header("Popular Routes")
-#     with st.container():
-#         st.write("---")
-#         left_column, right_column = st.columns(2)
-#         with left_column:
-#             st.header("Popular Routes")
-#             # Query for average fuel burn across airlines
-#             pop_routes = pd.read_sql(
-#                 f"WITH popular_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,COUNT(*) AS nb_flights FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY 1,2 ),ranked_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,ROW_NUMBER() OVER(PARTITION BY DEPARTURE_AIRPORT ORDER BY nb_flights DESC) AS rank FROM popular_routes) SELECT DEPARTURE_AIRPORT as origin, ARRIVAL_AIRPORT as destination FROM ranked_routes WHERE rank <= 3 ORDER BY rank LIMIT 10;",
-#                 conn)
-#             pop_routes_1 = pd.DataFrame(pop_routes)
-#             # pop_routes_1.to_csv("pr_1.csv")
-#             # pop_air = pop_air.set_index(['DEPARTURE_AIRPORT'])
-#             pop_routes_origin_dict = {"KMG": 'Kunming Wujiaba International Airport, China',
-#                                       "ETM": 'Ramon Airport, Israel',
-#                                       "LHE": 'Alama Iqbal International Airport, Pakistan',
-#                                       "KIF": 'Kingfisher Lake Airport, Canada', "TLV": 'Ben Gurion Airport, Israel',
-#                                       "SUN": 'Friedman Memorial Airport, Idaho', "YSO": 'Postville Airport, Canada',
-#                                       "BUU": 'Muara Bungo Airport, Indonesia',
-#                                       "HIB": 'Range Regional Airport, Minnesota',
-#                                       "ZAH": 'Zahedan International Airport, Iran'}
-#             pop_routes_dest_dict = {"CAN": 'Guangzhou Baiyun International Airport, China',
-#                                     "DME": 'Moscow Domodedovo Mikhail Lomonosov Airport, Russia',
-#                                     "DOH": 'Hamad International Airport, Qatar',
-#                                     "WNN": 'Wunnumin Lake Airport, Canada',
-#                                     "SLC": 'Salt Lake City International Airport, Utah',
-#                                     "CGK": 'Soekarno-Hatta International Airport, Indonesia',
-#                                     "THR": 'Mehrabad International Airport, Iran',
-#                                     "MSP": 'Minneapolis−Saint Paul International Airport, Minnesota',
-#                                     "YYR": 'Goose Bay Airport (YYR), Happy Valley-Goose Bay, Canada',
-#                                     "FRA": 'Frankfurt Airport, Germany'}
-#
-#             pop_routes_1.replace({"ORIGIN": pop_routes_origin_dict, "DESTINATION": pop_routes_dest_dict}, inplace=True)
-#             st.dataframe(pop_routes_1)
-#
-#         with right_column:
-#             st_lottie(lottie_emission, height=300, key="coding")
-#
-#         st.write(
-#             "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
+with pop_routes_tab:
+    # st.header("Popular Routes")
+    with st.container():
+        st.write("---")
+        left_column, right_column = st.columns(2)
+        with left_column:
+            st.header("Popular Routes")
+            # Query for average fuel burn across airlines
+            pop_routes = pd.read_sql(
+                f"WITH popular_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,COUNT(*) AS nb_flights FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY 1,2 ),ranked_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,ROW_NUMBER() OVER(PARTITION BY DEPARTURE_AIRPORT ORDER BY nb_flights DESC) AS rank FROM popular_routes) SELECT DEPARTURE_AIRPORT as origin, ARRIVAL_AIRPORT as destination FROM ranked_routes WHERE rank <= 3 ORDER BY rank LIMIT 10;",
+                conn)
+            pop_routes_1 = pd.DataFrame(pop_routes)
+            # pop_routes_1.to_csv("pr_1.csv")
+            # pop_air = pop_air.set_index(['DEPARTURE_AIRPORT'])
+            pop_routes_origin_dict = {"KMG": 'Kunming Wujiaba International Airport, China',
+                                      "ETM": 'Ramon Airport, Israel',
+                                      "LHE": 'Alama Iqbal International Airport, Pakistan',
+                                      "KIF": 'Kingfisher Lake Airport, Canada', "TLV": 'Ben Gurion Airport, Israel',
+                                      "SUN": 'Friedman Memorial Airport, Idaho', "YSO": 'Postville Airport, Canada',
+                                      "BUU": 'Muara Bungo Airport, Indonesia',
+                                      "HIB": 'Range Regional Airport, Minnesota',
+                                      "ZAH": 'Zahedan International Airport, Iran'}
+            pop_routes_dest_dict = {"CAN": 'Guangzhou Baiyun International Airport, China',
+                                    "DME": 'Moscow Domodedovo Mikhail Lomonosov Airport, Russia',
+                                    "DOH": 'Hamad International Airport, Qatar',
+                                    "WNN": 'Wunnumin Lake Airport, Canada',
+                                    "SLC": 'Salt Lake City International Airport, Utah',
+                                    "CGK": 'Soekarno-Hatta International Airport, Indonesia',
+                                    "THR": 'Mehrabad International Airport, Iran',
+                                    "MSP": 'Minneapolis−Saint Paul International Airport, Minnesota',
+                                    "YYR": 'Goose Bay Airport (YYR), Happy Valley-Goose Bay, Canada',
+                                    "FRA": 'Frankfurt Airport, Germany'}
 
+            pop_routes_1.replace({"ORIGIN": pop_routes_origin_dict, "DESTINATION": pop_routes_dest_dict}, inplace=True)
+            st.dataframe(pop_routes_1)
+
+        with right_column:
+            st_lottie(lottie_emission, height=300, key="coding")
+
+        st.write(
+            "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
 
 # ---- CONTACT ----
 # with st.container():
