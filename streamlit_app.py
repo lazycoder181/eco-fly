@@ -133,6 +133,7 @@ with tab3:
             pop_air = pd.read_sql(
                 f"SELECT TOP 10 DEPARTURE_AIRPORT, COUNT(*) AS flight_count FROM SCHEDULED_FLIGHT_EMISSIONS WHERE CAST(SCHEDULED_DEPARTURE_DATE AS DATE) >= CAST('2021-08-27' AS DATE) AND CAST(SCHEDULED_DEPARTURE_DATE AS DATE) < CAST('2022-08-27' AS DATE) GROUP BY 1 ORDER BY 2 DESC;",
                 conn)
+
             pop_air = pop_air.set_index(['DEPARTURE_AIRPORT'])
             st.line_chart(pop_air)
 
@@ -151,6 +152,24 @@ with tab4:
                 f"WITH popular_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,COUNT(*) AS nb_flights FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY 1,2 ),ranked_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,ROW_NUMBER() OVER(PARTITION BY DEPARTURE_AIRPORT ORDER BY nb_flights DESC) AS rank FROM popular_routes) SELECT DEPARTURE_AIRPORT as origin, ARRIVAL_AIRPORT as destination FROM ranked_routes WHERE rank <= 3 ORDER BY rank LIMIT 10;",
                 conn)
             # pop_air = pop_air.set_index(['DEPARTURE_AIRPORT'])
+            pop_routes_origin_dict = {"NOC": 'Ireland West Knock Airport, Ireland',
+                                      "TGD": 'Podgorica Airport, Montenegro',
+                                      "KWA": 'Bucholz Army Air Field, Marshall Islands',
+                                      "CGH": 'Congonhas Airport, Brazil', "CKH": 'Chokurdakh Airport, Russia',
+                                      "HDF": 'Heringsdorf Airport, Germany', "OND": 'Ondangwa Airport, Namibia',
+                                      "XMH": 'Manihi Airport', "LUA": 'Lukla Airport, Nepal',
+                                      "AKX": 'Aktobe Airport, Kazakhstan'}
+            pop_routes_dest_dict = {"LGW": 'London Gatwick Airport, United Kingdom, London',
+                                    "BEG": 'Belgrade Nikola Tesla Airport, Serbia',
+                                    "MAJ": 'Marshall Islands International Airport',
+                                    "SDU": 'Santos Dumont Airport, Brazil', "YKS": 'Yakutsk Airport, Russia',
+                                    "LUX": 'Luxembourg-Findel International Airport, Luxembourg',
+                                    "ERS": 'Eros Airport, Namibia',
+                                    "PPT": 'Faa International Airport, French Polynesia',
+                                    "KTM": 'Tribhuvan International Airport, Nepal',
+                                    "ALA": 'Almaty Airport, Kazakhstan'}
+
+            pop_routes = pop_routes.replace({"origin": pop_routes_origin_dict, "destination": pop_routes_dest_dict})
             st.dataframe(pop_routes)
 
         with right_column:
