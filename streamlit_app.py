@@ -29,7 +29,7 @@ def local_css(file_name):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
-local_css("C:/Users/adrane/PycharmProjects/Snowflake_Streamlit/style/style.css")
+local_css("C:/Users/adrane/PycharmProjects/Snowflake_Streamlit/style.css")
 
 # ---- LOAD ASSETS ----
 lottie_emission = load_lottieurl("https://assets1.lottiefiles.com/private_files/lf30_dy2xdidy.json")
