@@ -25,9 +25,9 @@ def load_lottieurl(url):
 
 
 # Use local CSS
-# def local_css(file_name):
-#     with open(file_name) as f:
-#         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 #
 # local_css("C:/Users/adrane/PycharmProjects/Snowflake_Streamlit/style.css")
@@ -158,24 +158,24 @@ with tab4:
 
         st.write(
             "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
-# ---- CONTACT ----
-# with st.container():
-#     st.write("---")
-#     st.header("Get In Touch With Us!")
-#     st.write("##")
-#
-#     # Contact Us section
-#     contact_form = """
-#     <form action="https://formsubmit.co/adrane.aws@gmail.com" method="POST">
-#         <input type="hidden" name="_captcha" value="false">
-#         <input type="text" name="name" placeholder="Your name" required>
-#         <input type="email" name="email" placeholder="Your email" required>
-#         <textarea name="message" placeholder="Your message here" required></textarea>
-#         <button type="submit">Send</button>
-#     </form>
-#     """
-#     left_column, right_column = st.columns(2)
-#     with left_column:
-#         st.markdown(contact_form, unsafe_allow_html=True)
-#     with right_column:
-#         st.empty()
+---- CONTACT ----
+with st.container():
+    st.write("---")
+    st.header("Get In Touch With Us!")
+    st.write("##")
+
+    # Contact Us section
+    contact_form = """
+    <form action="https://formsubmit.co/adrane.aws@gmail.com" method="POST">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="Your email" required>
+        <textarea name="message" placeholder="Your message here" required></textarea>
+        <button type="submit">Send</button>
+    </form>
+    """
+    left_column, right_column = st.columns(2)
+    with left_column:
+        st.markdown(contact_form, unsafe_allow_html=True)
+    with right_column:
+        st.empty()
