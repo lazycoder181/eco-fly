@@ -25,9 +25,9 @@ def load_lottieurl(url):
 
 
 # Use local CSS
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+# def local_css(file_name):
+#     with open(file_name) as f:
+#         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 #
 # local_css("C:/Users/adrane/PycharmProjects/Snowflake_Streamlit/style.css")
@@ -54,7 +54,7 @@ with st.container():
             "Check out our carbon emission analysis before booking your flights."
         )
     with right_column:
-        deloitte_img = Image.open('C:/Users/adrane/PycharmProjects/Snowflake_Streamlit/de.jpg')
+        deloitte_img = 'https://github.com/lazycoder181/eco-fly/blob/master/de.jpg'
         st.image(deloitte_img)
 
 # Defining different tabs
@@ -66,7 +66,7 @@ with tab1:
     # st.header(
     # components.iframe(
     #     "https://www.skyscanner.com.au/?&utm_source=google&utm_medium=cpc&utm_campaign=AU-Travel-Search-Brand-Skyscanner-Exact&utm_term=skyscanner&associateID=SEM_GGT_19370_00045&gclid=CjwKCAjwhNWZBhB_EiwAPzlhNoRMkbbkv5gyoFROA8t3Wo0MaIX7kjk6KesPuVDZefyX3r8Ww0Y6PxoCmmkQAvD_BwE&gclsrc=aw.ds)")
-    image = Image.open('C:/Users/adrane/PycharmProjects/Snowflake_Streamlit/skyscanner.PNG')
+    image = 'https://github.com/lazycoder181/eco-fly/blob/master/skyscanner.PNG'
     st.image(image, caption='Skyscanner', width=1750)
     st.write(
         "[Book here>](https://www.skyscanner.com.au/?&utm_source=google&utm_medium=cpc&utm_campaign=AU-Travel-Search-Brand-Skyscanner-Exact&utm_term=skyscanner&associateID=SEM_GGT_19370_00045&gclid=CjwKCAjwhNWZBhB_EiwAPzlhNoRMkbbkv5gyoFROA8t3Wo0MaIX7kjk6KesPuVDZefyX3r8Ww0Y6PxoCmmkQAvD_BwE&gclsrc=aw.ds)")
