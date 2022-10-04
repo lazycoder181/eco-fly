@@ -54,7 +54,7 @@ with st.container():
             "Check out our carbon emission analysis before booking your flights."
         )
     with right_column:
-        deloitte_img = 'https://github.com/lazycoder181/eco-fly/blob/master/de.jpg'
+        deloitte_img = 'https://github.com/lazycoder181/eco-fly/blob/be27381fb54cdb67a036dd24802903f626f033e3/de.jpg'
         st.image(deloitte_img)
 
 # Defining different tabs
