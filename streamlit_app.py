@@ -69,7 +69,7 @@ with tab1:
     image = 'https://raw.githubusercontent.com/lazycoder181/eco-fly/master/skyscanner.PNG'
     st.image(image, caption='Skyscanner', width=1750)
     st.write(
-        "[Book here>](https://www.skyscanner.com.au/?&utm_source=google&utm_medium=cpc&utm_campaign=AU-Travel-Search-Brand-Skyscanner-Exact&utm_term=skyscanner&associateID=SEM_GGT_19370_00045&gclid=CjwKCAjwhNWZBhB_EiwAPzlhNoRMkbbkv5gyoFROA8t3Wo0MaIX7kjk6KesPuVDZefyX3r8Ww0Y6PxoCmmkQAvD_BwE&gclsrc=aw.ds)")
+        "[Book here>](https://www.skyscanner.com.au/transport/flights-from/mela/221005/221012/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&originentityid=27544894&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=1)")
 
 with tab2:
     # st.header("Greenhouse Impact")
