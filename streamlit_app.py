@@ -192,8 +192,8 @@ with worst_flights_tab:
                 f"SELECT AIRLINECODE,FLIGHTNUMBER, MAX(ESTIMATED_C02_EFFICIENCY) MAX_ESTIMATED_CO2_EFFICIENCY FROM(SELECT AIRLINECODE,FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES/ESTIMATED_FUEL_BURN_TONNES as ESTIMATED_C02_EFFICIENCY,DENSE_RANK() OVER (ORDER BY ESTIMATED_C02_EFFICIENCY DESC)my_dense_rank FROM SCHEDULED_FLIGHT_EMISSIONS WHERE (ESTIMATED_FUEL_BURN_TONNES) <> 0) table1 GROUP BY AIRLINECODE,FLIGHTNUMBER ORDER BY MAX_ESTIMATED_CO2_EFFICIENCY desc LIMIT 5 ",
                 conn)
             worst_flights = pd.DataFrame(worst_flights)
-            worst_flights_dict = {'OZ': 'Asiana Airlines', 'GR': 'Aurigny Airlines', "UA": 'United AIrlines',
-                                  "NH": 'All Nippon Airways Co., Ltd.', "MH": 'Malaysian Airlines Berhad'}
+            worst_flights_dict = {'OZ': 'Asiana Airlines', 'GR': 'Aurigny Airlines', "UA": 'United Airlines',
+                                  "NH": 'All Nippon Airways Co., Ltd.', "MH": 'Malaysian Airlines Berhad','RVP':'Sevenair Air Services'}
             worst_flights.replace({'AIRLINECODE': worst_flights_dict}, inplace = True)
             # worst_flights = worst_flights.set_index(['AIRLINECODE'])
             st.dataframe(worst_flights)
@@ -209,9 +209,11 @@ with avoid_flights_tab:
             st.subheader("Flights to avoid if you are a customer")
 
             avoid_flights = pd.read_sql(
-                f"SELECT AIRLINECODE,MAX(CARBON_OFFSET_FEE_PER_CUSTOMER) as MAX_CARBON_OFFSET_FEE_PER_CUSTOMER FROM(SELECT  AIRLINECODE, FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES, SEATS, (ESTIMATED_CO2_EMISSIONS_TONNES *10.50) / SEATS as CARBON_OFFSET_FEE_PER_CUSTOMER FROM SCHEDULED_FLIGHT_EMISSIONS WHERE SEATS <> 0) GROUP BY AIRLINECODE, FLIGHTNUMBER ORDER BY MAX_CARBON_OFFSET_FEE_PER_CUSTOMER desc;",
+                f"SELECT AIRLINECODE,MAX(CARBON_OFFSET_FEE_PER_CUSTOMER) as MAX_CARBON_OFFSET_FEE_PER_CUSTOMER FROM(SELECT  AIRLINECODE, FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES, SEATS, (ESTIMATED_CO2_EMISSIONS_TONNES *10.50) / SEATS as CARBON_OFFSET_FEE_PER_CUSTOMER FROM SCHEDULED_FLIGHT_EMISSIONS WHERE SEATS <> 0) GROUP BY AIRLINECODE, FLIGHTNUMBER ORDER BY MAX_CARBON_OFFSET_FEE_PER_CUSTOMER desc LIMIT 10;",
                 conn)
             avoid_flights = pd.DataFrame(avoid_flights)
+            a_f_dict = {"3S": "AeroLogic", "CA": "Air China"}
+            avoid_flights.replace({'AIRLINECODE': a_f_dict}, inplace=True)
             avoid_flights = avoid_flights.set_index(['AIRLINECODE'])
             st.bar_chart(avoid_flights)
         with right_column:
