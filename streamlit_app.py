@@ -176,9 +176,6 @@ with best_flights_tab:
             best_flights_bar = best_flights_bar.set_index(['AIRLINECODE'])
             st.bar_chart(best_flights_bar)
 
-        st.write(
-            "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
-
 with worst_flights_tab:
     with st.container():
         st.write("---")
@@ -233,6 +230,8 @@ with fuel_burn_tab:
             st.bar_chart(fuel_burn)
         with right_column:
             st_lottie(lottie_fuel_burn, height=300, key="fuel_burn")
+        st.write(
+            "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
 
 with CO2_tab:
     # st.header("Popular Routes")
@@ -250,3 +249,5 @@ with CO2_tab:
             st.bar_chart(CO2_em)
         with right_column:
             st_lottie(lottie_CO2, height=300, key="CO2")
+        st.write(
+            "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
