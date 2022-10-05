@@ -141,7 +141,7 @@ with tab3:
         with right_column:
             st_lottie(lottie_airport, height=300, key="airport")
 
-with pop_routes_tab:
+with best_flights_tab:
     # st.header("Popular Routes")
     with st.container():
         st.write("---")
@@ -149,8 +149,8 @@ with pop_routes_tab:
         with left_column:
             st.header("Popular Routes")
             # Query for average fuel burn across airlines
-            pop_routes = pd.read_sql(
-                f"WITH popular_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,COUNT(*) AS nb_flights FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY 1,2 ),ranked_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,ROW_NUMBER() OVER(PARTITION BY DEPARTURE_AIRPORT ORDER BY nb_flights DESC) AS rank FROM popular_routes) SELECT DEPARTURE_AIRPORT as origin, ARRIVAL_AIRPORT as destination FROM ranked_routes WHERE rank <= 3 ORDER BY rank LIMIT 10;",
+            best_flights = pd.read_sql(
+                f"SELECT AIRLINECODE,FLIGHTNUMBER ,MAX(ESTIMATED_C02_EFFICIENCY) MAX_ESTIMATED_CO2_EFFICIENCY FROM(SELECT AIRLINECODE,FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES/ESTIMATED_FUEL_BURN_TONNES as ESTIMATED_C02_EFFICIENCY,DENSE_RANK() OVER (ORDER BY ESTIMATED_C02_EFFICIENCY DESC)my_dense_rank FROM SCHEDULED_FLIGHT_EMISSIONS WHERE (ESTIMATED_FUEL_BURN_TONNES) <> 0) table1 GROUP BY AIRLINECODE,FLIGHTNUMBER ORDER BY MAX_ESTIMATED_CO2_EFFICIENCY asc LIMIT 5;",
                 conn)
             pop_routes_1 = pd.DataFrame(pop_routes)
             # pop_routes_1.to_csv("pr_1.csv")

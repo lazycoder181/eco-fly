@@ -36,6 +36,10 @@ def load_lottieurl(url):
 lottie_emission = load_lottieurl("https://assets1.lottiefiles.com/private_files/lf30_dy2xdidy.json")
 lottie_burn = load_lottieurl("https://assets6.lottiefiles.com/packages/lf20_ZhtOc0.json")
 lottie_airport = load_lottieurl("https://assets6.lottiefiles.com/packages/lf20_jlmgqgx2.json")
+lottie_worst_fl = load_lottieurl("https://assets6.lottiefiles.com/packages/lf20_vyixuzos.json")
+lottie_avoid = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_ymjrns2k.json")
+lottie_fuel_burn = load_lottieurl("https://assets8.lottiefiles.com/packages/lf20_no9qrf5p.json")
+lottie_CO2 = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_wst709y2.json")
 # img_contact_form = Image.open("images/yt_contact_form.png")
 # img_lottie_animation = Image.open("images/yt_lottie_animation.png")
 
@@ -58,9 +62,10 @@ with st.container():
         st.image(deloitte_img)
 
 # Defining different tabs
-tab1, tab2, tab3, pop_routes_tab = st.tabs([
+tab1, tab2, tab3, best_flights_tab, worst_flights_tab, avoid_flights_tab, fuel_burn_tab, CO2_tab = st.tabs([
     "SkyScanner",
-    "Greenhouse Impact", "Busiest Airports for Departures", "Popular Routes"])
+    "Greenhouse Impact", "Busiest Airports for Departures", "Top 5 flights", "Non-Eco-friendly Flights",
+    "Flights to Avoid", "Fuel Burn", 'CO2 Emission'])
 # tab4
 
 with tab1:
@@ -104,7 +109,7 @@ with tab2:
         # For years 2021-2022
         with left_column:
             st.subheader("Total Fuel burn in 2021-2022 based on Airlines ")
-            # Query for total fuel burn across airlines
+
             total_burn_latest = pd.read_sql(
                 f"SELECT AIRLINECODE, SUM(ESTIMATED_FUEL_BURN_TONNES) AS TOTAL_FUEL_BURN FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY AIRLINECODE ORDER BY SUM(ESTIMATED_CO2_EMISSIONS_TONNES) DESC LIMIT 10;",
                 conn)
@@ -113,7 +118,7 @@ with tab2:
         # For year 2020
         with right_column:
             st.subheader("Total Fuel burn in 2019 based on Airlines")
-            # Query for total fuel burn across airlines
+
             total_burn_hist = pd.read_sql(
                 f"SELECT AIRLINECODE, SUM(ESTIMATED_FUEL_BURN_TONNES) AS TOTAL_FUEL_BURN FROM FLIGHTS2019 GROUP BY AIRLINECODE ORDER BY SUM(ESTIMATED_CO2_EMISSIONS_TONNES) DESC LIMIT 10;",
                 conn)
@@ -130,7 +135,7 @@ with tab3:
         left_column, right_column = st.columns(2)
         with left_column:
             st.subheader("Busiest Airports")
-            # Query for average fuel burn across airlines
+
             pop_air = pd.read_sql(
                 f"SELECT TOP 10 DEPARTURE_AIRPORT, COUNT(*) AS flight_count FROM SCHEDULED_FLIGHT_EMISSIONS WHERE CAST(SCHEDULED_DEPARTURE_DATE AS DATE) >= CAST('2021-08-27' AS DATE) AND CAST(SCHEDULED_DEPARTURE_DATE AS DATE) < CAST('2022-08-27' AS DATE) GROUP BY 1 ORDER BY 2 DESC;",
                 conn)
@@ -141,67 +146,107 @@ with tab3:
         with right_column:
             st_lottie(lottie_airport, height=300, key="airport")
 
-with pop_routes_tab:
+with best_flights_tab:
     # st.header("Popular Routes")
     with st.container():
         st.write("---")
         left_column, right_column = st.columns(2)
         with left_column:
-            st.header("Popular Routes")
-            # Query for average fuel burn across airlines
-            pop_routes = pd.read_sql(
-                f"WITH popular_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,COUNT(*) AS nb_flights FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY 1,2 ),ranked_routes AS (SELECT DEPARTURE_AIRPORT,ARRIVAL_AIRPORT,ROW_NUMBER() OVER(PARTITION BY DEPARTURE_AIRPORT ORDER BY nb_flights DESC) AS rank FROM popular_routes) SELECT DEPARTURE_AIRPORT as origin, ARRIVAL_AIRPORT as destination FROM ranked_routes WHERE rank <= 3 ORDER BY rank LIMIT 10;",
+            st.subheader("Top 5 Flights in terms of CO2 Efficiency")
+
+            best_flights = pd.read_sql(
+                f"SELECT AIRLINECODE,FLIGHTNUMBER ,MAX(ESTIMATED_C02_EFFICIENCY) MAX_ESTIMATED_CO2_EFFICIENCY FROM(SELECT AIRLINECODE,FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES/ESTIMATED_FUEL_BURN_TONNES as ESTIMATED_C02_EFFICIENCY,DENSE_RANK() OVER (ORDER BY ESTIMATED_C02_EFFICIENCY DESC)my_dense_rank FROM SCHEDULED_FLIGHT_EMISSIONS WHERE (ESTIMATED_FUEL_BURN_TONNES) <> 0) table1 GROUP BY AIRLINECODE,FLIGHTNUMBER ORDER BY MAX_ESTIMATED_CO2_EFFICIENCY asc LIMIT 5;",
                 conn)
-            pop_routes_1 = pd.DataFrame(pop_routes)
-            # pop_routes_1.to_csv("pr_1.csv")
-            # pop_air = pop_air.set_index(['DEPARTURE_AIRPORT'])
-            pop_routes_origin_dict = {"KMG": 'Kunming Wujiaba International Airport, China',
-                                      "ETM": 'Ramon Airport, Israel',
-                                      "LHE": 'Alama Iqbal International Airport, Pakistan',
-                                      "KIF": 'Kingfisher Lake Airport, Canada', "TLV": 'Ben Gurion Airport, Israel',
-                                      "SUN": 'Friedman Memorial Airport, Idaho', "YSO": 'Postville Airport, Canada',
-                                      "BUU": 'Muara Bungo Airport, Indonesia',
-                                      "HIB": 'Range Regional Airport, Minnesota',
-                                      "ZAH": 'Zahedan International Airport, Iran'}
-            pop_routes_dest_dict = {"CAN": 'Guangzhou Baiyun International Airport, China',
-                                    "DME": 'Moscow Domodedovo Mikhail Lomonosov Airport, Russia',
-                                    "DOH": 'Hamad International Airport, Qatar',
-                                    "WNN": 'Wunnumin Lake Airport, Canada',
-                                    "SLC": 'Salt Lake City International Airport, Utah',
-                                    "CGK": 'Soekarno-Hatta International Airport, Indonesia',
-                                    "THR": 'Mehrabad International Airport, Iran',
-                                    "MSP": 'Minneapolis−Saint Paul International Airport, Minnesota',
-                                    "YYR": 'Goose Bay Airport (YYR), Happy Valley-Goose Bay, Canada',
-                                    "FRA": 'Frankfurt Airport, Germany'}
-
-            pop_routes_1.replace({"ORIGIN": pop_routes_origin_dict, "DESTINATION": pop_routes_dest_dict}, inplace=True)
-            st.dataframe(pop_routes_1)
-
+            best_flights = pd.DataFrame(best_flights)
+            best_flights_dict = {"VS": 'Virgin Atlantic', "NH": 'All Nippon Airways Co., Ltd',
+                                 "DL": 'Delta Air Lines, Inc.', "AC": 'Air Canada'}
+            best_flights.replace({'AIRLINECODE': best_flights_dict}, inplace=True)
+            st.dataframe(best_flights)
         with right_column:
             st_lottie(lottie_emission, height=300, key="coding")
+
+    with st.container():
+        st.write("---")
+        left_column, right_column = st.columns(2)
+        with left_column:
+            best_flights_bar = pd.read_sql(
+                f"SELECT AIRLINECODE,MAX(ESTIMATED_C02_EFFICIENCY) MAX_ESTIMATED_CO2_EFFICIENCY FROM(SELECT AIRLINECODE,FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES/ESTIMATED_FUEL_BURN_TONNES as ESTIMATED_C02_EFFICIENCY,DENSE_RANK() OVER (ORDER BY ESTIMATED_C02_EFFICIENCY DESC)my_dense_rank FROM SCHEDULED_FLIGHT_EMISSIONS WHERE (ESTIMATED_FUEL_BURN_TONNES) <> 0) table1 GROUP BY AIRLINECODE,FLIGHTNUMBER ORDER BY MAX_ESTIMATED_CO2_EFFICIENCY asc LIMIT 5;",
+                conn)
+            best_flights_bar.replace({'AIRLINECODE': best_flights_dict}, inplace=True)
+            best_flights_bar = best_flights_bar.set_index(['AIRLINECODE'])
+            st.bar_chart(best_flights_bar)
 
         st.write(
             "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
 
-# ---- CONTACT ----
-# with st.container():
-#     st.write("---")
-#     st.header("Get In Touch With Us!")
-#     st.write("##")
-#
-#     # Contact Us section
-#     contact_form = """
-#     <form action="https://formsubmit.co/adrane.aws@gmail.com" method="POST">
-#         <input type="hidden" name="_captcha" value="false">
-#         <input type="text" name="name" placeholder="Your name" required>
-#         <input type="email" name="email" placeholder="Your email" required>
-#         <textarea name="message" placeholder="Your message here" required></textarea>
-#         <button type="submit">Send</button>
-#     </form>
-#     """
-#     left_column, right_column = st.columns(2)
-#     with left_column:
-#         st.markdown(contact_form, unsafe_allow_html=True)
-#     with right_column:
-#         st.empty()
-# print(pop_routes_1)
+with worst_flights_tab:
+    with st.container():
+        st.write("---")
+        left_column, right_column = st.columns(2)
+        with left_column:
+            st.subheader("Top 5 Non-Eco-friendly flights")
+
+            worst_flights = pd.read_sql(
+                f"SELECT AIRLINECODE,FLIGHTNUMBER ,MAX(ESTIMATED_C02_EFFICIENCY) MAX_ESTIMATED_CO2_EFFICIENCY FROM(SELECT AIRLINECODE,FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES/ESTIMATED_FUEL_BURN_TONNES as ESTIMATED_C02_EFFICIENCY,DENSE_RANK() OVER (ORDER BY ESTIMATED_C02_EFFICIENCY DESC)my_dense_rank FROM SCHEDULED_FLIGHT_EMISSIONS WHERE (ESTIMATED_FUEL_BURN_TONNES) <> 0) table1 GROUP BY AIRLINECODE,FLIGHTNUMBER ORDER BY MAX_ESTIMATED_CO2_EFFICIENCY desc LIMIT 5 ",
+                conn)
+            worst_flights = pd.DataFrame(worst_flights)
+            worst_flights_dict = {"OZ": 'Asiana Airlines Inc.', "NH": 'All Nippon Airways Co., Ltd',
+                                  "GR": 'Aurigny Airways', "UA": 'United Airlines', 'MH': "Malaysia Airlines"}
+            worst_flights.replace({'AIRLINECODE': worst_flights_dict}, inplace=True)
+            st.dataframe(worst_flights)
+        with right_column:
+            st_lottie(lottie_worst_fl, height=300, key="worst_fl")
+
+with avoid_flights_tab:
+    # st.header("Popular Routes")
+    with st.container():
+        st.write("---")
+        left_column, right_column = st.columns(2)
+        with left_column:
+            st.subheader("Flights to avoid if you are a customer")
+
+            avoid_flights = pd.read_sql(
+                f"SELECT AIRLINECODE,MAX(CARBON_OFFSET_FEE_PER_CUSTOMER) as MAX_CARBON_OFFSET_FEE_PER_CUSTOMER FROM(SELECT  AIRLINECODE, FLIGHTNUMBER,SCHEDULED_DEPARTURE_DATE, ESTIMATED_CO2_EMISSIONS_TONNES, SEATS, (ESTIMATED_CO2_EMISSIONS_TONNES *10.50) / SEATS as CARBON_OFFSET_FEE_PER_CUSTOMER FROM SCHEDULED_FLIGHT_EMISSIONS WHERE SEATS <> 0) GROUP BY AIRLINECODE, FLIGHTNUMBER ORDER BY MAX_CARBON_OFFSET_FEE_PER_CUSTOMER desc;",
+                conn)
+            avoid_flights = pd.DataFrame(avoid_flights)
+            avoid_flights = avoid_flights.set_index(['AIRLINECODE'])
+            st.bar_chart(avoid_flights)
+        with right_column:
+            st_lottie(lottie_avoid, height=300, key="avoid")
+
+        st.write(
+            "[Airport Codes>](https://www.world-airport-codes.com/alphabetical/airport-code/a.html?page=1)")
+
+with fuel_burn_tab:
+    # st.header("Popular Routes")
+    with st.container():
+        st.write("---")
+        left_column, right_column = st.columns(2)
+        with left_column:
+            st.subheader("Fuel Burn in Tonnes per AIRLINE CODE")
+
+            fuel_burn = pd.read_sql(
+                f"SELECT AIRLINECODE, SUM(ESTIMATED_FUEL_BURN_TONNES) as TOTAL_FUEL_BURNED_IN_TONNES FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY AIRLINECODE ORDER BY TOTAL_FUEL_BURNED_IN_TONNES DESC;",
+                conn)
+            fuel_burn = pd.DataFrame(fuel_burn)
+            fuel_burn = fuel_burn.set_index(['AIRLINECODE'])
+            st.bar_chart(fuel_burn)
+        with right_column:
+            st_lottie(lottie_fuel_burn, height=300, key="fuel_burn")
+
+with CO2_tab:
+    # st.header("Popular Routes")
+    with st.container():
+        st.write("---")
+        left_column, right_column = st.columns(2)
+        with left_column:
+            st.subheader("Co2 Emission per AIRLINE CODE")
+
+            CO2_em = pd.read_sql(
+                f"SELECT AIRLINECODE, SUM(ESTIMATED_CO2_EMISSIONS_TONNES) as TOTAL_CO2_EMISSIONS_IN_TONNES FROM SCHEDULED_FLIGHT_EMISSIONS GROUP BY AIRLINECODE ORDER BY TOTAL_CO2_EMISSIONS_IN_TONNES DESC;",
+                conn)
+            CO2_em = pd.DataFrame(CO2_em)
+            CO2_em = CO2_em.set_index(['AIRLINECODE'])
+            st.bar_chart(CO2_em)
+        with right_column:
+            st_lottie(lottie_CO2, height=300, key="CO2")
